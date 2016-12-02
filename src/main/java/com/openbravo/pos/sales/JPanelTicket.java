@@ -29,6 +29,7 @@ import com.openbravo.data.loader.SentenceList;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import com.openbravo.pos.customers.DataLogicCustomers;
 import com.openbravo.pos.customers.JCustomerFinder;
+import com.openbravo.pos.eet.EetClient;
 import com.openbravo.pos.forms.*;
 import com.openbravo.pos.inventory.TaxCategoryInfo;
 import com.openbravo.pos.panels.JProductFinder;
@@ -152,6 +153,8 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
      *
      */
     protected DataLogicCustomers dlCustomers;
+
+    protected EetClient eetClient;
     
     private JPaymentSelect paymentdialogreceipt;
     private JPaymentSelect paymentdialogrefund;
@@ -256,8 +259,10 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         
         // inicializamos
         m_oTicket = null;
-        m_oTicketExt = null;      
-        
+        m_oTicketExt = null;
+
+        eetClient = new EetClient();
+        eetClient.init(dlSystem.getResourceAsProperties(EetClient.PROPERTIES_KEY));
     }
 
     /**
@@ -1379,6 +1384,17 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                         if (executeEvent(ticket, ticketext, "ticket.save") == null) {
                             // Save the receipt and assign a receipt number
                             try {
+
+                                // assign a ticket ID from the correct sequence
+                                dlSales.assignTicketId(ticket);
+
+                                // submit ticket paid in cash to EET
+                                String paymentType = ticket.getPayments().get(0).getName();
+                                if("cash".equals(paymentType) || "cashrefund".equals(paymentType)) {
+                                    eetClient.sendToEet(ticket);
+                                }
+
+                                // save ticket with the EET data
                                 dlSales.saveTicket(ticket, m_App.getInventoryLocation());
                             } catch (BasicException eData) {
                                 MessageInf msg = new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.nosaveticket"), eData);

@@ -197,6 +197,27 @@
 	<line><text align="center" length="42">Thank You</text></line>
 	<line><text align="center" length="42">Please Call Again</text></line>
 
+	#if(${ticket.properties.fik})
+	<line><text align="left" length="40">FIK: ${ticket.properties.fik.substring(0,34)}</text></line>
+	<line><text align="left"                      >     ${ticket.properties.fik.substring(35)}</text></line>
+	#end
+
+	#if(${ticket.properties.bkp})
+	<line><text align="left" length="40">BKP: ${ticket.properties.bkp.substring(0,34)}</text></line>
+	<line><text align="left"                      >     ${ticket.properties.bkp.substring(35)}</text></line>
+	#end
+
+	#if(${ticket.properties.pkp})
+	<line><text align="left">PKP: ${ticket.properties.pkp.substring(0,34)}</text></line>
+	<line><text align="left">${ticket.properties.pkp.substring(35,74)}</text></line>
+	<line><text align="left">${ticket.properties.pkp.substring(75,114)}</text></line>
+	<line><text align="left">${ticket.properties.pkp.substring(115,154)}</text></line>
+	<line><text align="left">${ticket.properties.pkp.substring(155,194)}</text></line>
+	<line><text align="left">${ticket.properties.pkp.substring(195,234)}</text></line>
+	<line><text align="left">${ticket.properties.pkp.substring(235,274)}</text></line>
+	<line><text align="left">${ticket.properties.pkp.substring(275,314)}</text></line>
+	<line><text align="left">${ticket.properties.pkp.substring(315)}</text></line>
+	#end
 
 </ticket>
 

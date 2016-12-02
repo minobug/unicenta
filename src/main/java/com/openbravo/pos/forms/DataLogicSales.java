@@ -1220,25 +1220,10 @@ public class DataLogicSales extends BeanFactoryDataSingle {
 @Override
 public Object transact() throws BasicException {
 
-    // Set Receipt Id
-    if (ticket.getTicketId() == 0) {
-        switch (ticket.getTicketType()) {
-            case TicketInfo.RECEIPT_NORMAL:
-                ticket.setTicketId(getNextTicketIndex());
-                break;
-            case TicketInfo.RECEIPT_REFUND:
-                ticket.setTicketId(getNextTicketRefundIndex());
-                break;
-            case TicketInfo.RECEIPT_PAYMENT:
-                ticket.setTicketId(getNextTicketPaymentIndex());
-                break;
-            case TicketInfo.RECEIPT_NOSALE:
-                ticket.setTicketId(getNextTicketPaymentIndex());
-                break;                
-            default:
-                throw new BasicException();
-        }
-    }
+                // Set Receipt Id
+                if (ticket.getTicketId() == 0) {
+                    assignTicketId(ticket);
+                }
 
     // new receipt
     // Modified JG Aug 2011 - person
@@ -1373,6 +1358,27 @@ public Object transact() throws BasicException {
 }
 };
         t.execute();
+    }
+
+    public void assignTicketId(TicketInfo ticket) throws BasicException {
+
+        // Set Receipt Id
+        switch (ticket.getTicketType()) {
+            case TicketInfo.RECEIPT_NORMAL:
+                ticket.setTicketId(getNextTicketIndex());
+                break;
+            case TicketInfo.RECEIPT_REFUND:
+                ticket.setTicketId(getNextTicketRefundIndex());
+                break;
+            case TicketInfo.RECEIPT_PAYMENT:
+                ticket.setTicketId(getNextTicketPaymentIndex());
+                break;
+            case TicketInfo.RECEIPT_NOSALE:
+                ticket.setTicketId(getNextTicketPaymentIndex());
+                break;
+            default:
+                throw new BasicException();
+        }
     }
 
     /**
